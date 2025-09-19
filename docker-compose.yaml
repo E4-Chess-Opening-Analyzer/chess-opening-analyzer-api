@@ -1,0 +1,56 @@
+name: 'go-api'
+
+services:
+  database:
+    build:
+      context: .
+      dockerfile: ./build/database/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-database
+    container_name: ${COMPOSE_PROJECT_NAME}-database
+    restart: always
+    volumes:
+      - type: volume
+        source: database
+        target: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+    networks:
+      - go-api-network
+  golang:
+    build:
+      context: .
+      dockerfile: ./build/go/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-golang
+    container_name: ${COMPOSE_PROJECT_NAME}-golang
+    restart: always
+    command: sh -c "go mod tidy && cd src/ && go install github.com/swaggo/swag/cmd/swag@latest && go get -u github.com/swaggo/swag/cmd/swag && swag init -g main.go -o docs && gow run main.go"
+    volumes:
+      - type: bind
+        source: .
+        target: /app/
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - database
+    networks:
+      - go-api-network
+
+volumes:
+  database:
+    name: ${COMPOSE_PROJECT_NAME}-database
+
+networks:
+  go-api-network:
+    name: ${COMPOSE_PROJECT_NAME}-network
+    driver: bridge
