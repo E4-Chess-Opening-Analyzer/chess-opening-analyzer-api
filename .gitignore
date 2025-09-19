@@ -1,1 +1,6 @@
 .env
+go.mod
+go.sum
+docs.go
+swagger.json
+swagger.yaml
