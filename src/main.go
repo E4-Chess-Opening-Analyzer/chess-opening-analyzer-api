@@ -19,8 +19,6 @@ func main() {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api"
 
-	v1 := r.Group("/api")
-
 	r.Use(middlewares.DatabaseMiddleware(database.DB))
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(":8080")
