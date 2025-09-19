@@ -1,13 +1,27 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"chess-opening-analyzer/src/database"
+	"chess-opening-analyzer/src/docs"
+	"chess-opening-analyzer/src/middlewares"
+	"log"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
 
 func main() {
-  router := gin.Default()
-  router.GET("/ping", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-      "message": "pong",
-    })
-  })
-  router.Run() // listen and serve on 0.0.0.0:8080
+	// Connect to database
+	if err := database.Connect(); err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	r := gin.Default()
+	docs.SwaggerInfo.BasePath = "/api"
+
+	v1 := r.Group("/api")
+
+	r.Use(middlewares.DatabaseMiddleware(database.DB))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.Run(":8080")
 }
