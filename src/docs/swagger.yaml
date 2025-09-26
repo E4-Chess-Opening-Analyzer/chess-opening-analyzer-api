@@ -1,4 +1,42 @@
+definitions:
+  models.Game:
+    properties:
+      id:
+        type: integer
+      moves:
+        items:
+          type: string
+        type: array
+      result:
+        description: '1: white win, 0: draw, -1: black win'
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /games/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a game by its ID
+      parameters:
+      - description: Game ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Game'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Get game by ID
+      tags:
+      - games
 swagger: "2.0"
