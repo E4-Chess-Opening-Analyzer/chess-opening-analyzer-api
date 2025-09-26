@@ -2,6 +2,7 @@ import psycopg2
 import csv
 import time
 import re
+import json  # Added for JSON serialization
 
 TOTAL_LINES = 6250000
 REGEX = re.compile(r'[!?]+')
@@ -36,11 +37,13 @@ with open('chess_games.csv', 'r', newline='') as f:
                 move_split = move_split[:10]
                 move_split = [REGEX.sub('', m) for m in move_split]
 
-                moves_pg = "{" + ",".join(move_split) + "}"
+                moves_pg = json.dumps(move_split)
                 writer.writerow([result, moves_pg])
 
             i += 1
             if i % 10000 == 0:
+                # Comment the following line when using complete dataset
+                break 
                 elapsed = time.time() - start_time
                 rate = i / elapsed
                 remaining = (TOTAL_LINES - i) / rate if rate > 0 else 0
