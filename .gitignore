@@ -4,3 +4,6 @@ go.sum
 docs.go
 swagger.json
 swagger.yaml
+chess_games.csv
+reduced_chess_games.csv
+.vscode
