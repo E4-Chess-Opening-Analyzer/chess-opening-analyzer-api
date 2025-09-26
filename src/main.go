@@ -5,7 +5,9 @@ import (
 	"chess-opening-analyzer/src/docs"
 	"chess-opening-analyzer/src/middlewares"
 	"chess-opening-analyzer/src/models"
+	"chess-opening-analyzer/src/routes"
 	"log"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -27,6 +29,9 @@ func main() {
 
 	// Apply database middleware
 	r.Use(middlewares.DatabaseMiddleware(database.DB))
+
+	v1 := r.Group("/api")
+	routes.SetupGameRoutes(v1.Group("/games"))
 
 	// Swagger endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
