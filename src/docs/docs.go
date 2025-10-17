@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/games/{id}": {
-            "get": {
-                "description": "Retrieve a game by its ID",
+        "/games/outcomes": {
+            "post": {
+                "description": "Retrieve outcomes using the moves played",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,48 +27,76 @@ const docTemplate = `{
                 "tags": [
                     "games"
                 ],
-                "summary": "Get game by ID",
+                "summary": "Get outcomes for moves",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Game ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Moves object",
+                        "name": "moves",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Moves"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Game"
+                            "$ref": "#/definitions/models.Outcome"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
                     },
-                    "404": {
-                        "description": "Not Found"
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
         }
     },
     "definitions": {
-        "models.Game": {
+        "models.Moves": {
             "type": "object",
             "properties": {
-                "id": {
+                "black_win": {
                     "type": "integer"
                 },
-                "moves": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
+                "draw": {
+                    "type": "integer"
+                },
+                "new_column": {
+                    "type": "integer"
+                },
+                "new_row": {
+                    "type": "integer"
+                },
+                "next": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/models.Moves"
                     }
                 },
-                "result": {
-                    "description": "1: white win, 0: draw, -1: black win",
+                "piece": {
+                    "type": "string"
+                },
+                "previous_column": {
+                    "type": "integer"
+                },
+                "previous_row": {
+                    "type": "integer"
+                },
+                "white_win": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Outcome": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
                     "type": "integer"
                 }
             }

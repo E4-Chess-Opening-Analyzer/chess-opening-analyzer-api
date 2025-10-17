@@ -1,7 +1,7 @@
 FROM golang:1.24-alpine3.21
 
-LABEL maintainer="Adrien Panis <a.panis@my-goodlife.fr>"
-LABEL description="golang:1.24-alpine3.21 with custom configuration for My Good Life"
+LABEL maintainer="Luc Lacotte <luc.lonqq@gmail.com>"
+LABEL description="golang:1.24-alpine3.21 with git and gow installed"
 LABEL version="1.0"
 
 RUN apk add --no-cache git

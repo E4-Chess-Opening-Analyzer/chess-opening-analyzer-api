@@ -1,30 +1,29 @@
 package database
 
 import (
+	"context"
+	"time"
+
 	"gorm.io/gorm"
-	"gorm.io/driver/postgres"
-	"log"
-	"os"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var DB *gorm.DB
 
-func Connect() error {
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
+func ConnectMongo() (*mongo.Database, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	if user == "" || password == "" || host == "" || port == "" || dbName == "" {
-		log.Fatal("Database connection details are not set in environment variables")
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:rootpass@database:27017/goapi?authSource=admin"))
+	if err != nil {
+		return nil, err
 	}
 
-	var err error
+	if err := client.Ping(ctx, nil); err != nil {
+		return nil, err
+	}
 
-	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=UTC"
-
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	return err
+	return client.Database("goapi"), nil
 }

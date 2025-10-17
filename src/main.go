@@ -4,8 +4,8 @@ import (
 	"chess-opening-analyzer/src/database"
 	"chess-opening-analyzer/src/docs"
 	"chess-opening-analyzer/src/middlewares"
-	"chess-opening-analyzer/src/models"
 	"chess-opening-analyzer/src/routes"
+	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -14,21 +14,21 @@ import (
 )
 
 func main() {
-	// Connect to database
-	if err := database.Connect(); err != nil {
-		log.Fatal("Failed to connect to database:", err)
+	// Connect to MongoDB
+	db, err := database.ConnectMongo()
+	if err != nil {
+		log.Fatal("Failed to connect to MongoDB:", err)
 	}
 
-	// Auto-migrate the database schema
-    if err := database.DB.AutoMigrate(&models.Game{}); err != nil {
-        log.Fatal("Failed to migrate database:", err)
-    }
+	if err := db.Client().Ping(context.Background(), nil); err != nil {
+		log.Fatal("MongoDB ping failed:", err)
+	}
 
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api"
 
-	// Apply database middleware
-	r.Use(middlewares.DatabaseMiddleware(database.DB))
+	// Apply MongoDB middleware
+	r.Use(middlewares.MongoMiddleware(db))
 
 	v1 := r.Group("/api")
 	routes.SetupGameRoutes(v1.Group("/games"))

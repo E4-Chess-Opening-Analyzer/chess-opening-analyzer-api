@@ -1,7 +1,7 @@
-FROM postgres:17-alpine
-LABEL maintainer="Adrien Panis <a.panis@my-goodlife.fr>"
-LABEL description="PostgreSQL 17 with custom configuration for My Good Life"
+FROM mongo:7-jammy
+LABEL maintainer="Luc Lacotte <luc.lonqq@gmail.fr>"
+LABEL description="mongo:7-jammy for Chess Opening Analyzer"
 LABEL version="1.0"
 
 # Copy initialization script
-COPY build/database/init.sql /docker-entrypoint-initdb.d/
+COPY build/database/init-mongo.js /docker-entrypoint-initdb.d/

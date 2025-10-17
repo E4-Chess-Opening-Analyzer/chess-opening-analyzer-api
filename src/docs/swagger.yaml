@@ -1,42 +1,60 @@
 definitions:
-  models.Game:
+  models.Moves:
     properties:
-      id:
+      black_win:
         type: integer
-      moves:
-        items:
-          type: string
-        type: array
-      result:
-        description: '1: white win, 0: draw, -1: black win'
+      draw:
         type: integer
+      new_column:
+        type: integer
+      new_row:
+        type: integer
+      next:
+        additionalProperties:
+          $ref: '#/definitions/models.Moves'
+        type: object
+      piece:
+        type: string
+      previous_column:
+        type: integer
+      previous_row:
+        type: integer
+      white_win:
+        type: integer
+    type: object
+  models.Outcome:
+    additionalProperties:
+      additionalProperties:
+        type: integer
+      type: object
     type: object
 info:
   contact: {}
 paths:
-  /games/{id}:
-    get:
+  /games/outcomes:
+    post:
       consumes:
       - application/json
-      description: Retrieve a game by its ID
+      description: Retrieve outcomes using the moves played
       parameters:
-      - description: Game ID
-        in: path
-        name: id
+      - description: Moves object
+        in: body
+        name: moves
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/models.Moves'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/models.Game'
+            $ref: '#/definitions/models.Outcome'
         "400":
           description: Bad Request
-        "404":
-          description: Not Found
-      summary: Get game by ID
+        "500":
+          description: Internal Server Error
+      summary: Get outcomes for moves
       tags:
       - games
 swagger: "2.0"
