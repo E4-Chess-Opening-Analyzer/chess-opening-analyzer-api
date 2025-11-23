@@ -3,7 +3,6 @@ package repositories
 import (
 	"chess-opening-analyzer/src/models"
 	"context"
-	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,33 +17,26 @@ func NewMovesRepository(db *mongo.Database) *MovesRepository {
 	return &MovesRepository{DB: db}
 }
 
-
-// Outcome = map[nextMove]map[result]int
+// GetOutcomesForMoves Outcome = map[nextMove]map[result]int
 func (repo *MovesRepository) GetOutcomesForMoves(moves []string) (models.Outcome, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	collection := repo.DB.Collection("openings")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var rootNode map[string]*models.Moves
-	err := repo.DB.Collection("opening").FindOne(ctx, bson.M{}).Decode(&rootNode)
-	if err != nil {
+	// On récupère le document correspondant à la séquence
+	filter := bson.M{"move_sequence": moves}
+	var doc models.Move
+	if err := collection.FindOne(ctx, filter).Decode(&doc); err != nil {
 		return nil, err
 	}
 
-	current := rootNode
-	for _, move := range moves {
-		node, exists := current[move]
-		if !exists {
-			return nil, errors.New("moves not found in database")
-		}
-		current = node.Next
-	}
-
+	// Construire outcomes pour tous les coups suivants
 	outcomes := make(models.Outcome)
-	for nextMove, node := range current {
-		outcomes[nextMove] = map[int]uint{
-			1:  uint(node.WhiteWin),
-			0:  uint(node.Draw),
-			-1: uint(node.BlackWin),
+	for _, next := range doc.NextMoves {
+		outcomes[next.Name] = map[int]uint{
+			1:  next.WhiteWin,
+			0:  next.Draw,
+			-1: next.BlackWin,
 		}
 	}
 

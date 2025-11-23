@@ -7,3 +7,4 @@ swagger.yaml
 chess_games.csv
 reduced_chess_games.csv
 .vscode
+.idea

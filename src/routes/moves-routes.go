@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"chess-opening-analyzer/src/controllers"
-)
 
+	"github.com/gin-gonic/gin"
+)
 
 // Get outcomes for moves
 // @Summary Get outcomes for moves
@@ -12,15 +12,14 @@ import (
 // @Tags games
 // @Accept json
 // @Produce json
-// @Param moves body models.Moves true "Moves object"
+// @Param moves body map[]string true "Moves object"
 // @Success 201 {object} models.Outcome
 // @Failure 400
 // @Failure 500
-// @Router /games/outcomes [post]
+// @Router /games [post]
 func GetOutcomesForMoves(r *gin.RouterGroup) {
 	r.POST("", controllers.GetOutcomesForMoves)
 }
-
 
 func SetupGameRoutes(r *gin.RouterGroup) {
 	GetOutcomesForMoves(r)

@@ -1,27 +1,4 @@
 definitions:
-  models.Moves:
-    properties:
-      black_win:
-        type: integer
-      draw:
-        type: integer
-      new_column:
-        type: integer
-      new_row:
-        type: integer
-      next:
-        additionalProperties:
-          $ref: '#/definitions/models.Moves'
-        type: object
-      piece:
-        type: string
-      previous_column:
-        type: integer
-      previous_row:
-        type: integer
-      white_win:
-        type: integer
-    type: object
   models.Outcome:
     additionalProperties:
       additionalProperties:
@@ -31,7 +8,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /games/outcomes:
+  /games:
     post:
       consumes:
       - application/json
@@ -42,7 +19,9 @@ paths:
         name: moves
         required: true
         schema:
-          $ref: '#/definitions/models.Moves'
+          additionalProperties:
+            type: string
+          type: object
       produces:
       - application/json
       responses:

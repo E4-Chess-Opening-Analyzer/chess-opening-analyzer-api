@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/games/outcomes": {
+        "/games": {
             "post": {
                 "description": "Retrieve outcomes using the moves played",
                 "consumes": [
@@ -35,7 +35,10 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Moves"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 ],
@@ -57,41 +60,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Moves": {
-            "type": "object",
-            "properties": {
-                "black_win": {
-                    "type": "integer"
-                },
-                "draw": {
-                    "type": "integer"
-                },
-                "new_column": {
-                    "type": "integer"
-                },
-                "new_row": {
-                    "type": "integer"
-                },
-                "next": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/models.Moves"
-                    }
-                },
-                "piece": {
-                    "type": "string"
-                },
-                "previous_column": {
-                    "type": "integer"
-                },
-                "previous_row": {
-                    "type": "integer"
-                },
-                "white_win": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.Outcome": {
             "type": "object",
             "additionalProperties": {
