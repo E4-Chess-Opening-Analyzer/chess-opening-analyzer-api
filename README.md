@@ -23,15 +23,11 @@ This project consists of three main services:
 COMPOSE_PROJECT_NAME=chess-opening-analyzer
 DB_HOST=database
 DB_PORT=27017
-# Root DB user (used as MONGO_INITDB_ROOT_USERNAME in docker-compose)
-DB_USER=root
-# Root DB password (used as MONGO_INITDB_ROOT_PASSWORD)
-DB_PASSWORD=rootpass
-# Main database name
+DB_ROOT_USER=root
+DB_ROOT_PASSWORD=rootpass
 DB_NAME=goapi
-# Application DB user that will be created by init-mongo script
-APP_DB_USER=ugoapi
-APP_DB_PASSWORD=pgoapi
+DB_USER=ugoapi
+DB_PASSWORD=pgoapi
 SECRET_KEY=your-secret-key-here
 ```
 
@@ -118,8 +114,8 @@ The MongoDB instance comes pre-configured with:
 ### Connecting to Database
 - **Host**: `database` (within Docker network) or `localhost` (from host)
 - **Port**: `27017`
-- **Username**: `root`
-- **Password**: `rootpass`
+- **Username**: `ugoapi`
+- **Password**: `pgoapi`
 - **Database**: `goapi`
 
 ## Deployment
