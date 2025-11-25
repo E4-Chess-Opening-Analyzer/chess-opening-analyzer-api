@@ -1,0 +1,16 @@
+// This file is a template used to initialize the MongoDB database.
+// It is processed inside the MongoDB container at startup by the
+// `/docker-entrypoint-initdb.d/00-generate-init-mongo.sh` script which
+// substitutes placeholders with the container environment variables.
+
+// Target database (placeholder will be replaced by the generator script)
+db = db.getSiblingDB('${DB_NAME}');
+
+// Create an application user for the app to use (placeholders will be replaced)
+db.createUser({
+  user: "${DB_USER}",
+  pwd: "${DB_PASSWORD}",
+  roles: [
+    { role: "readWrite", db: "${DB_NAME}" }
+  ]
+});

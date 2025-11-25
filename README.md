@@ -23,9 +23,15 @@ This project consists of three main services:
 COMPOSE_PROJECT_NAME=chess-opening-analyzer
 DB_HOST=database
 DB_PORT=27017
+# Root DB user (used as MONGO_INITDB_ROOT_USERNAME in docker-compose)
 DB_USER=root
+# Root DB password (used as MONGO_INITDB_ROOT_PASSWORD)
 DB_PASSWORD=rootpass
+# Main database name
 DB_NAME=goapi
+# Application DB user that will be created by init-mongo script
+APP_DB_USER=ugoapi
+APP_DB_PASSWORD=pgoapi
 SECRET_KEY=your-secret-key-here
 ```
 
@@ -39,6 +45,8 @@ cd chess-opening-analyzer-api
 
 2. Start all services:
 ```bash
+# The database container will generate the MongoDB init script at startup
+# from the environment variables you defined in `.env` (see variables below).
 docker-compose up -d
 ```
 
@@ -56,6 +64,12 @@ docker-compose up -d
 - MongoDB instance with authentication
 - Default credentials: `root/rootpass`
 - Database name: `goapi`
+
+Note: The `build/database/init-mongo.js.template` file is a template with placeholders.
+The MongoDB container runs the `generate-init-mongo.sh` script at startup which will
+render `init-mongo.js` from the template using the container environment variables
+(`DB_NAME`, `DB_USER`, `DB_PASSWORD`). Make sure these are defined in your
+`.env` so the application database user is created on initial container startup.
 
 ### Mongo Express (Port 8081)
 - Web-based MongoDB administration tool

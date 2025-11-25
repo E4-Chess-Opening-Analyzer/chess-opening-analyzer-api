@@ -15,9 +15,9 @@ services:
     ports:
       - "27017:27017" 
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rootpass
-      - MONGO_INITDB_DATABASE=goapi
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
     networks:
       - go-api-network
   golang:
@@ -48,12 +48,12 @@ services:
   mongo-express:
     image: mongo-express:latest
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_ROOT_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_ROOT_PASSWORD}
       - ME_CONFIG_MONGODB_SERVER=database
-      - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_BASICAUTH_USERNAME=ugoapi
-      - ME_CONFIG_BASICAUTH_PASSWORD=pgoapi
+      - ME_CONFIG_MONGODB_PORT=${DB_PORT}
+      - ME_CONFIG_BASICAUTH_USERNAME=${DB_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${DB_PASSWORD}
     ports:
       - "8081:8081"
     depends_on:
